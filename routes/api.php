@@ -29,3 +29,5 @@ Route::resource('categories', CategoriesController::class);
 Route::resource('dci', DciController::class);
 Route::resource('sources', SourcesController::class);
 Route::resource('alert', AlertsController::class);
+
+Route::post('/importSource',[SourcesController::class,'ImportData']);

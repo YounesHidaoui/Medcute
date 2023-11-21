@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\Dci;
+use App\Imports\DciImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class DciController extends Controller
@@ -128,5 +130,14 @@ class DciController extends Controller
             
             return response()->json(['error' => 'Ops Something went wrong'], 500);
         }
+    }
+    public function ImportData(Request $request){
+
+       
+        Excel::import(new DciImport, $request->file('file')->store('files'));
+
+        
+        
+
     }
 }

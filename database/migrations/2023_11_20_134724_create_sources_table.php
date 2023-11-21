@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('sources', function (Blueprint $table) {
             $table->id();
-            $table->string('continent'); 
-            $table->string('country');
-            $table->string('sigle'); 
-            $table->string('agence'); 
-            $table->string('website'); 
+            $table->string('continent')->nullable(); 
+            $table->string('country')->nullable();
+            $table->string('sigle')->nullable(); 
+            $table->string('agence')->nullable(); 
+            $table->string('website')->nullable(); 
             $table->timestamps();
         });
     }

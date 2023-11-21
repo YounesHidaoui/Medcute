@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\Source;
+use App\Imports\SourceImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SourcesController extends Controller
 {
@@ -147,5 +149,15 @@ class SourcesController extends Controller
             
             return response()->json(['error' => 'Ops Something went wrong'], 500);
         }
+    }
+
+    public function ImportData(Request $request){
+
+       
+        Excel::import(new SourceImport, $request->file('file')->store('files'));
+
+        
+        
+
     }
 }
