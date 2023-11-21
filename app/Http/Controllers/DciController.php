@@ -58,14 +58,16 @@ class DciController extends Controller
     public function show(string $id)
     {
         try {
-            $dci= Dci::find($id)->get();
-            if (!$dci) {
-                throw new \Exception('Ops Dci not found');
+            $dci = Dci::find($id);
+            if(!$dci){
+                throw new \Exception('Ops Dci not found ');
             }
-            return response()->json($dci, 200);
+            return response()->json($dci,200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Something went wrong'], 500);
         }
+        
+       
     }
 
     /**
@@ -110,9 +112,9 @@ class DciController extends Controller
     public function destroy(string $id)
     {
         try {
-            $dci = Dci::find($id);
+            $dci = Dci::findOrFail($id);
 
-            if (!$Dci) {
+            if (!$dci) {
                 throw new \Exception('Ops Dci not found');
             }
 

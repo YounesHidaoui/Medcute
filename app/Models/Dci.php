@@ -9,7 +9,8 @@ class Dci extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name'
+        'name',
+        'id'
       ];
     public function alerts()
         {

@@ -37,33 +37,32 @@ class AlertsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'dci_id'=>'required|numeric',
-            'soucre_id'=>'required|numeric',
-            'news_link'=>'string',
-            'summary'=>'required|string|max:255',
-            'category_id'=>'required|numeric',
-            'news_date'=>'date',
-            'country_concerned'=>'string'
+            'dci_id'=>'required|integer',
+            'source_id'=>'required|integer',
+            'news_link'=>'required|url',
+            'summary'=>'required|string',
+            'category_id'=>'required|integer',
+            'news_date'=>'required|date',
+            'country_concerned'=>'required|string'
 
                 ]); 
     
             try {
-                    $alert = Alerts::create([
+                $alert = Alerts::create([
                         'dci_id' => $request->input('dci_id'),
-                        'soucre_id' => $request->input('soucre_id'),
+                        'source_id' => $request->input('source_id'),
                         'news_link' => $request->input('news_link'),
                         'summary' => $request->input('summary'),
                         'category_id' => $request->input('category_id'),
-                        'news_link' => $request->input('news_link'),
                         'news_date' => $request->input('news_date'),
                         'country_concerned' => $request->input('country_concerned'),
                     ]);
                     return response()->json($alert, 200);
                 }
-                catch (\Exception $e) {
+            catch (\Exception $e) {
                   
                     return response()->json(['error' => 'Something went wrong'], 500);
-                }
+            }
             
     }
 
@@ -73,7 +72,7 @@ class AlertsController extends Controller
     public function show(string $id)
     {
         try {
-            $Alert= Alerts::find($id)->get();
+            $Alert= Alerts::find($id);
             if (!$Alert) {
                 throw new \Exception('Ops Alert not found');
             }
@@ -96,7 +95,29 @@ class AlertsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'dci_id' => 'required|numeric',
+            'source_id' => 'required|numeric',
+            'news_link' => 'required|url',
+            'summary' => 'required|string',
+            'category_id' => 'required|numeric',
+            'news_date' => 'required|date',
+            'country_concerned' => 'required|string',
+        ]);
+
+        $alert = Alerts::findOrFail($id);
+
+        $alert->update([
+            'dci_id' => $request->input('dci_id'),
+            'source_id' => $request->input('source_id'),
+            'news_link' => $request->input('news_link'),
+            'summary' => $request->input('summary'),
+            'category_id' => $request->input('category_id'),
+            'news_date' => $request->input('news_date'),
+            'country_concerned' => $request->input('country_concerned'),
+        ]);
+
+        return response()->json(['message' => 'Alert updated successfully', 'data' => $alert]);
     }
 
     /**

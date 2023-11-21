@@ -111,12 +111,12 @@ class CategoriesController extends Controller
     public function destroy(string $id)
     {
         try {
-            $Categorie = Categories::find($id);
+            $categorie = Categories::find($id);
 
-            if (!$Categorie) {
+            if (!$categorie) {
                 throw new \Exception('Ops Categorie not found');
             }
-            $Categorie->delete();
+            $categorie->delete();
 
             return response()->json(['message' => 'Categorie deleted successfully'], 200);
 

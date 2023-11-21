@@ -12,8 +12,9 @@ class Source extends Model
         'continent',
         'country',
         'sigle',
-        'sigle',
+        'agence',
         'website',
+        'id'
       ];
     public function alerts()
 {

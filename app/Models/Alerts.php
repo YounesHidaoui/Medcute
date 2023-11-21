@@ -16,6 +16,7 @@ class Alerts extends Model
         'category_id',
         'news_date',
         'country_concerned',
+        'id'
       ];
         public function dci()
         {
