@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\Sources;
 
@@ -12,7 +12,16 @@ class SourcesController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $AllSources = Sources::all();
+            return response()->json($AllSources, 200);
+
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
+        
+
     }
 
     /**
@@ -36,7 +45,15 @@ class SourcesController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $source= Sources::find($id)->get();
+            if (!$source) {
+                throw new \Exception('Ops source not found');
+            }
+            return response()->json($source, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
     }
 
     /**

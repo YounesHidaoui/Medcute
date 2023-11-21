@@ -21,7 +21,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('categories', CategoriesController::class);
-Route::resource('dci', DciController::class);
-Route::resource('sources', SourcesController::class);
-Route::resource('alert', AlertsController::class);
+// Route::resource('categories', CategoriesController::class);
+// Route::resource('dci', DciController::class);
+// Route::resource('sources', SourcesController::class);
+// Route::resource('alert', AlertsController::class);

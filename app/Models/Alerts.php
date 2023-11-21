@@ -8,6 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Alerts extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'dci_id',
+        'source_id',
+        'news_link',
+        'summary',
+        'category_id',
+        'news_date',
+        'country_concerned',
+      ];
         public function dci()
         {
             return $this->belongsTo(Dci::class);

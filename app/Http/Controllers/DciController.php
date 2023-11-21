@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\Dci;
 
@@ -81,7 +81,27 @@ class DciController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $request->validate([
+                'name' => 'nullable|string|max:255',
+            ]);
+
+            $dci = Dci::find($id);
+
+            if (!$dci) {
+                throw new \Exception('dci not found');
+            }
+
+            if ($request->has('name')) {
+                $dci->name = $request->input('name') ?? $dci->name;
+            }
+            $dci->save();
+
+            return response()->json($dci, 200);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
     }
 
     /**

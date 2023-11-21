@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Http\Request;
 use App\Models\Categories;
@@ -43,6 +44,7 @@ class CategoriesController extends Controller
                     $categorie = Categories::create([
                         'name' => $request->input('name'),
                     ]);
+
                     return response()->json($categorie, 200);
                 }
                 catch (\Exception $e) {
@@ -58,8 +60,8 @@ class CategoriesController extends Controller
     {
         try {
             $Categorie= Categories::find($id)->get();
-            if (!$categorie) {
-                throw new \Exception('Ops Categ$categorie not found');
+            if (!$Categorie) {
+                throw new \Exception('Ops categorie not found');
             }
             return response()->json($Categorie, 200);
         } catch (\Exception $e) {
@@ -80,7 +82,27 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $request->validate([
+                'name' => 'nullable|string|max:255',
+            ]);
+
+            $categorie = Categories::find($id);
+
+            if (!$categorie) {
+                throw new \Exception('categorie not found');
+            }
+
+            if ($request->has('name')) {
+                $categorie->name = $request->input('name') ?? $categorie->name;
+            }
+            $categorie->save();
+
+            return response()->json($categorie, 200);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
     }
 
     /**
@@ -92,7 +114,7 @@ class CategoriesController extends Controller
             $Categorie = Categories::find($id);
 
             if (!$Categorie) {
-                throw new \Exception('Ops Cat$Categorie not found');
+                throw new \Exception('Ops Categorie not found');
             }
             $Categorie->delete();
 
