@@ -15,13 +15,14 @@ use App\Models\Source;
 
 class AlertsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         try {
-            $Alerts = Alerts::all();
+
+            $Alerts = Alerts::with('dci','source','categories')->get();
+            
+
             return response()->json($Alerts, 200);
 
         } catch (\Exception $e) {
@@ -31,9 +32,8 @@ class AlertsController extends Controller
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+   
+    
     public function create()
     {
         
@@ -44,16 +44,18 @@ class AlertsController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'dci_id'=>'required|integer',
-            'source_id'=>'required|integer',
-            'news_link'=>'required|url',
-            'summary'=>'required|string',
-            'category_id'=>'required|integer',
-            'news_date'=>'required|date',
-            'country_concerned'=>'required|string'
-
-                ]); 
+        $request->validate(
+            [
+                'dci_id'=>'required|integer',
+                'source_id'=>'required|integer',
+                'news_link'=>'required|string',
+                'summary'=>'required|string',
+                'risk'=>'required|string',
+                'category_id'=>'required|integer',
+                'news_date'=>'required|date',
+                'country_concerned'=>'required|string'
+                ]
+            ); 
     
             try {
                 $alert = Alerts::create([
@@ -61,17 +63,18 @@ class AlertsController extends Controller
                         'source_id' => $request->input('source_id'),
                         'news_link' => $request->input('news_link'),
                         'summary' => $request->input('summary'),
+                        'risk' => $request->input('risk'),
                         'category_id' => $request->input('category_id'),
                         'news_date' => $request->input('news_date'),
                         'country_concerned' => $request->input('country_concerned'),
                     ]);
+        
                     return response()->json($alert, 200);
                 }
             catch (\Exception $e) {
                   
-                    return response()->json(['error' => 'Something went wrong'], 500);
+                    return response()->json(['error' => 'Something went wrong',$e], 500);
             }
-            
     }
 
     /**
@@ -108,6 +111,7 @@ class AlertsController extends Controller
             'source_id' => 'required|numeric',
             'news_link' => 'required|url',
             'summary' => 'required|string',
+            'risk'=>'required|string',
             'category_id' => 'required|numeric',
             'news_date' => 'required|date',
             'country_concerned' => 'required|string',
@@ -120,6 +124,7 @@ class AlertsController extends Controller
             'source_id' => $request->input('source_id'),
             'news_link' => $request->input('news_link'),
             'summary' => $request->input('summary'),
+            'risk' => $request->input('risk'),
             'category_id' => $request->input('category_id'),
             'news_date' => $request->input('news_date'),
             'country_concerned' => $request->input('country_concerned'),
@@ -209,17 +214,22 @@ class AlertsController extends Controller
 
     public function AllData (){
         $Data = [
-                                    'dci_id' => '1',
-                                    'source_id' => '1',
-                                    'news_link' => 'www.google.com',
-                                    'summary' =>  'lorem testing' ,
-                                    'category_id' => '1',
-                                    'news_date' => '20-10-2023',
-                                    'country_concerned' => 'maroc',
+                                        'dci_id' => '1',
+                                        'source_id' => '1',
+                                        'news_link' => 'www.google.com',
+                                        'summary' =>  'lorem testing' ,
+                                        'risk'=>'100%',
+                                        'category_id' => '1',
+                                        'news_date' => '20-10-2023',
+                                        'country_concerned' => 'maroc',
         ];
-        // $response = $Data->json();
-        
+       
+     
+
         return $Data;
+       
+        
+        // return $alert;
     }
 
 }

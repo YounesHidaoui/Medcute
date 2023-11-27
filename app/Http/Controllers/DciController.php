@@ -136,8 +136,5 @@ class DciController extends Controller
        
         Excel::import(new DciImport, $request->file('file')->store('files'));
 
-        
-        
-
     }
 }
