@@ -13,6 +13,7 @@ class Alerts extends Model
         'source_id',
         'news_link',
         'summary',
+        'risk',
         'category_id',
         'news_date',
         'country_concerned',
@@ -30,6 +31,6 @@ class Alerts extends Model
 
         public function categories()
         {
-            return $this->belongsTo(Categories::class);
+            return $this->belongsTo(Categories::class,'category_id');
         }
 }
