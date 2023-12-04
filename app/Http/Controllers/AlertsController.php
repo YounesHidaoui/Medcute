@@ -39,7 +39,7 @@ class AlertsController extends Controller
         $request->validate([
             'dci_id'=>'required|integer',
             'source_id'=>'required|integer',
-            'news_link'=>'required|url',
+            'news_link'=>'required|',
             'summary'=>'required|string',
             'category_id'=>'required|integer',
             'news_date'=>'required|date',

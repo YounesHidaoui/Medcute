@@ -31,3 +31,4 @@ Route::resource('sources', SourcesController::class);
 Route::resource('alert', AlertsController::class);
 
 Route::post('/importSource',[SourcesController::class,'ImportData']);
+Route::post('/importDci',[DciController::class,'ImportData']);
