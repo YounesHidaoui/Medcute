@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('dci_id')->references('id')->on('dcis');
             $table->foreignId('source_id')->references('id')->on('sources');
+            $table->string('title');
+            $table->string('laboratory ');
             $table->string('news_link');
             $table->text('summary');
             $table->string('risk');
