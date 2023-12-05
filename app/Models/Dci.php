@@ -14,6 +14,6 @@ class Dci extends Model
       ];
     public function alerts()
         {
-            return $this->hasMany(Alert::class);
+            return $this->hasMany(Alerts::class);
         }
 }

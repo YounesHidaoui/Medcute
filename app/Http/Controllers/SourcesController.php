@@ -156,8 +156,5 @@ class SourcesController extends Controller
        
         Excel::import(new SourceImport, $request->file('file')->store('files'));
 
-        
-        
-
     }
 }

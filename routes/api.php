@@ -32,3 +32,7 @@ Route::resource('alert', AlertsController::class);
 
 Route::post('/importSource',[SourcesController::class,'ImportData']);
 Route::post('/importDci',[DciController::class,'ImportData']);
+//http://127.0.0.1:8000/api/alertsysteme
+Route::get('/alert-systeme',[AlertsController::class,'AlertSysteme']);
+// Route::get('/alertsysteme',[AlertsController::class,'AllData']);
+    

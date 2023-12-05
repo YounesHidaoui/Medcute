@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('source_id')->references('id')->on('sources');
             $table->string('news_link');
             $table->text('summary');
+            $table->string('risk');
             $table->foreignId('category_id')->references('id')->on('categories');
             $table->date('news_date');
             $table->string('country_concerned');
