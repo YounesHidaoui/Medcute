@@ -11,6 +11,8 @@ class Alerts extends Model
     protected $fillable = [
         'dci_id',
         'source_id',
+        'title',
+        'laboratory',
         'news_link',
         'summary',
         'risk',

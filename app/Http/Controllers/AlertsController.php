@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\Alerts;
 
-
+use App\Events\AlertsEvent;
 use App\Models\Categories;
 use App\Models\Dci;
 use App\Models\Source;
@@ -21,7 +21,7 @@ class AlertsController extends Controller
         try {
 
             $Alerts = Alerts::with('dci','source','categories')->get();
-            
+
 
             return response()->json($Alerts, 200);
 
@@ -68,13 +68,20 @@ class AlertsController extends Controller
                         'news_date' => $request->input('news_date'),
                         'country_concerned' => $request->input('country_concerned'),
                     ]);
-        
+                    // Alerts::create($alert);
                     return response()->json($alert, 200);
+
+                  
+
+                   
+                    
                 }
             catch (\Exception $e) {
                   
                     return response()->json(['error' => 'Something went wrong',$e], 500);
             }
+            
+        
     }
 
     /**
@@ -83,7 +90,7 @@ class AlertsController extends Controller
     public function show(string $id)
     {
         try {
-            $Alert= Alerts::find($id);
+            $Alert= Alerts::with('dci','source','categories')->find($id);
             if (!$Alert) {
                 throw new \Exception('Ops Alert not found');
             }
@@ -159,49 +166,46 @@ class AlertsController extends Controller
 
     public function AlertSysteme()
     {
-
-       
-        
-        
         $DciList = Dci::pluck('name')->toArray();
         $CategoriesList = Categories::pluck('name')->toArray();
         $SourceList = Source::pluck('website')->toArray();
 
         if($DciList || $CategoriesList || $SourceList)
-        {
-            foreach ($SourceList as $link) 
             {
-                $response = Http::get('http://127.0.0.1:8000/api/alertsysteme',
-
-                [
-                    'link'=>$link,'DciList'=>$DciList,'CategoriesList'=>$CategoriesList
-                ]);
-
-                    foreach ($response as $value) 
-                    {
-                        $idDci = Dci::find($value['dci']);
-                        $idCategories = Categories::find($value['Category']);
-                        try {
-                            $alert = Alerts::create(
-                                [
-                                    'dci_id' => $idDci->id,
-                                    'source_id' => $value,
-                                    'news_link' => $value,
-                                    'summary' =>  $value ,
-                                    'risk'=>$value['risk'],
-                                    'category_id' => $idCategories->id,
-                                    'news_date' => $value,
-                                    'country_concerned' => $value,
-                                ]
-                            );
-                                return response()->json($alert, 200);
+                foreach ($SourceList as $link) 
+                {
+                    $response = Http::get('http://127.0.0.1:8000/api/alertsysteme',
+                        [
+                            'link'=>$link,'DciList'=>$DciList,'CategoriesList'=>$CategoriesList
+                        ]
+                    );
+                        foreach ($response as $value) 
+                                {
+                                    $idDci = Dci::with($value['dci'])->id()->get();
+                                    $idCategories = Categories::find($value['Category']);
+                                    try {
+                                        $alert = Alerts::create(
+                                            [
+                                                'dci_id' => $idDci->id,
+                                                'source_id' => $value,
+                                                "title"=>$value["title"],
+                                                "laboratoire"=>$value["laboratoire"],
+                                                'news_link' => $link,
+                                                'summary' =>  $value['simmary'],
+                                                'risk'=>$value['risk'],
+                                                'category_id' => $idCategories->id,
+                                                'news_date' => $value['date'],
+                                                'country_concerned' => $value['country'],
+                                            ]
+                                        );
+                                        return response()->json($alert, 200);
+                                        event(new AlertsEvent($alert));
+                                    }
+                                catch (\Exception $e) {
+                                    
+                                        return response()->json(['error' => 'Something went wrong'], 500);
+                                }
                             }
-                        catch (\Exception $e) {
-                            
-                                return response()->json(['error' => 'Something went wrong'], 500);
-                        }
-                    }
-            
                 $responseData = $response->json();
                 
             }
@@ -231,5 +235,11 @@ class AlertsController extends Controller
         
         // return $alert;
     }
+
+    public function getApi(){
+        $response = Http::get('http://127.0.0.1:8000/api/alertsysteme/');
+        return $data->sendResponse($response->json());
+    }
+    
 
 }
