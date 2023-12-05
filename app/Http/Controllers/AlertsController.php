@@ -12,6 +12,7 @@ use App\Events\AlertsEvent;
 use App\Models\Categories;
 use App\Models\Dci;
 use App\Models\Source;
+use GuzzleHttp\Psr7\Message;
 
 class AlertsController extends Controller
 {
@@ -164,51 +165,66 @@ class AlertsController extends Controller
         }
     }
 
-    public function AlertSysteme()
+    public function AlertSystem()
     {
         $DciList = Dci::pluck('name')->toArray();
         $CategoriesList = Categories::pluck('name')->toArray();
         $SourceList = Source::pluck('website')->toArray();
-
+       
         if($DciList || $CategoriesList || $SourceList)
             {
-                foreach ($SourceList as $link) 
-                {
-                    $response = Http::get('http://127.0.0.1:8000/api/alertsysteme',
+                // foreach ($SourceList as $link) 
+                // {
+                    $response = Http::timeout(200)->post('http://127.0.0.1:5000/generate',
                         [
-                            'link'=>$link,'DciList'=>$DciList,'CategoriesList'=>$CategoriesList
-                        ]
+                            "message" => "getdata in one task",
+                            "url" => "https://www.sahpra.org.za/news-and-updates/sahpra-acknowledges-world-patient-safety-day-and-world-pharmacist-day/"                        ]
                     );
-                        foreach ($response as $value) 
+                    $data = $response['data'];
+
+                    if (is_string($data)) {
+                        $decoded  = json_decode($data);
+                    }
+                    
+                    if (is_object($decoded) && isset($decoded->data)) {
+                        $records = $decoded->data; // Access property with object syntax
+                    }else {
+                        $records = [] ;
+                    }
+                        foreach ($records as $value) 
                                 {
-                                    $idDci = Dci::with($value['dci'])->id()->get();
-                                    $idCategories = Categories::find($value['Category']);
+                                    // return $value->dci;
+                                    $idDci = Dci::where('name', $value->dci)->value('id');
+                                    $idCategories = Categories::where('name', $value->category)->value('id');
+
+                                    // return $value;
                                     try {
                                         $alert = Alerts::create(
                                             [
-                                                'dci_id' => $idDci->id,
-                                                'source_id' => $value,
-                                                "title"=>$value["title"],
-                                                "laboratoire"=>$value["laboratoire"],
-                                                'news_link' => $link,
-                                                'summary' =>  $value['simmary'],
-                                                'risk'=>$value['risk'],
-                                                'category_id' => $idCategories->id,
-                                                'news_date' => $value['date'],
-                                                'country_concerned' => $value['country'],
+                                                'dci_id' => $idDci,
+                                                'source_id' => 1,
+                                                "title"=>$value->title,
+                                                "laboratory"=> $value->laboratoire,
+                                                'news_link' => 'https://www.sahpra.org.za/news-and-updates/',
+                                                'summary' =>  $value->summary,
+                                                'risk'=>$value->risk,
+                                                // 'category_id' => $idCategories,
+                                                'category_id' => 1,
+                                                'news_date' => $value->date,
+                                                'country_concerned' => $value->country,
                                             ]
                                         );
-                                        return response()->json($alert, 200);
-                                        event(new AlertsEvent($alert));
+                                        // event(new AlertsEvent($alert));
                                     }
-                                catch (\Exception $e) {
-                                    
-                                        return response()->json(['error' => 'Something went wrong'], 500);
+                                    catch (\Exception $e) {
+                                        
+                                        return response()->json(['error' => 'Something went wrong'. $e], 500);
+                                    }
                                 }
-                            }
-                $responseData = $response->json();
+                                return response()->json("alerts saved ! ", 200);
+                // $responseData = $response->json();
                 
-            }
+            // }
           
         }
        
@@ -236,10 +252,10 @@ class AlertsController extends Controller
         // return $alert;
     }
 
-    public function getApi(){
-        $response = Http::get('http://127.0.0.1:8000/api/alertsysteme/');
-        return $data->sendResponse($response->json());
-    }
+    // public function getApi(){
+    //     $response = Http::get('http://127.0.0.1:8000/api/alertsysteme/');
+    //     return $data->sendResponse($response->json());
+    // }
     
 
 }
