@@ -25,7 +25,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-
 Route::resource('categories', CategoriesController::class);
 Route::resource('dci', DciController::class);
 Route::resource('sources', SourcesController::class);
@@ -36,7 +35,7 @@ Route::post('/importDci',[DciController::class,'ImportData']);
 //http://127.0.0.1:8000/api/alertsysteme
 Route::get('/alert-systeme',[AlertsController::class,'AlertSysteme']);
 Route::get('/alertsysteme',[AlertsController::class,'AllData']);
-Route::get('/getapi',[AlertsController::class,'getApi']);
+Route::get('/getApi',[AlertsController::class,'getApi']);
     
 
 Route::get('/login', [AuthController::class],'login')->name('login');

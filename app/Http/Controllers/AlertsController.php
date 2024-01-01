@@ -163,6 +163,9 @@ class AlertsController extends Controller
             return response()->json(['error' => 'Ops Something went wrong'], 500);
         }
     }
+   
+
+    // Function for Create Alert Systeme with Ai Api and Saving into Modal Alert
 
     public function AlertSysteme()
     {
@@ -170,7 +173,7 @@ class AlertsController extends Controller
         $CategoriesList = Categories::pluck('name')->toArray();
         $SourceList = Source::pluck('website')->toArray();
 
-        if($DciList || $CategoriesList || $SourceList)
+        if ($DciList || $CategoriesList || $SourceList)
             {
                 foreach ($SourceList as $link) 
                 {
@@ -181,19 +184,18 @@ class AlertsController extends Controller
                     );
                         foreach ($response as $value) 
                                 {
-                                    $idDci = Dci::with($value['dci'])->id()->get();
-                                    $idCategories = Categories::find($value['Category']);
-                                    try {
-                                        $alert = Alerts::create(
+                                   
+                                try {
+                                    $alert = Alerts::create(
                                             [
-                                                'dci_id' => $idDci->id,
-                                                'source_id' => $value,
+                                                'dci_id' =>  Dci::where('name',$value['dci'])->first()->id,
+                                                'source_id' =>  Source::where('website',$link)->first()->id,
                                                 "title"=>$value["title"],
                                                 "laboratoire"=>$value["laboratoire"],
                                                 'news_link' => $link,
-                                                'summary' =>  $value['simmary'],
+                                                'summary' =>  $value['summary'],
                                                 'risk'=>$value['risk'],
-                                                'category_id' => $idCategories->id,
+                                                'category_id' =>Categories::where('name',$value['category'])->first()->id,
                                                 'news_date' => $value['date'],
                                                 'country_concerned' => $value['country'],
                                             ]
@@ -201,7 +203,7 @@ class AlertsController extends Controller
                                         return response()->json($alert, 200);
                                         event(new AlertsEvent($alert));
                                     }
-                                catch (\Exception $e) {
+                            catch (\Exception $e) {
                                     
                                         return response()->json(['error' => 'Something went wrong'], 500);
                                 }
@@ -214,8 +216,6 @@ class AlertsController extends Controller
        
         
     }
-
-
     public function AllData (){
         $Data = [
                                         'dci_id' => '1',
@@ -227,18 +227,16 @@ class AlertsController extends Controller
                                         'news_date' => '20-10-2023',
                                         'country_concerned' => 'maroc',
         ];
-       
-     
-
+        
         return $Data;
        
-        
-        // return $alert;
     }
 
     public function getApi(){
-        $response = Http::get('http://127.0.0.1:8000/api/alertsysteme/');
-        return $data->sendResponse($response->json());
+
+        $idDci = Dci::where('name','ACECLOFENAC')->first()->id;
+        // $response = Http::get('http://127.0.0.1:8000/api/alertsysteme/');
+        return $idDci;
     }
     
 
