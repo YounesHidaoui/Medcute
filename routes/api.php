@@ -33,11 +33,17 @@ Route::resource('alert', AlertsController::class);
 Route::post('/importSource',[SourcesController::class,'ImportData']);
 Route::post('/importDci',[DciController::class,'ImportData']);
 //http://127.0.0.1:8000/api/alertsysteme
+<<<<<<< HEAD
 Route::get('/alert-systeme',[AlertsController::class,'AlertSysteme']);
 Route::get('/alertsysteme',[AlertsController::class,'AllData']);
 Route::get('/getApi',[AlertsController::class,'getApi']);
+=======
+Route::post('/alert-system',[AlertsController::class,'AlertSystem']);
+Route::post('/alertsysteme',[AlertsController::class,'AllData']);
+// Route::get('/getapi',[AlertsController::class,'getApi']);
+>>>>>>> 415485dc967f9306e5a494e8fc8ecd9592b5e76c
     
 
-Route::get('/login', [AuthController::class],'login')->name('login');
-Route::get('/logout',[AuthController::class],'logout')->name('logout');
-Route::get('/auth0/callback', [AuthController::class],'callback')->name('auth0-callback');
+// Route::get('/login', [AuthController::class],'login')->name('login');
+// Route::get('/logout',[AuthController::class],'logout')->name('logout');
+// Route::get('/auth0/callback', [AuthController::class],'callback')->name('auth0-callback');
